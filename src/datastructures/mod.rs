@@ -1,18 +1,20 @@
-#[derive(Clone)]
+use std::{any::TypeId, default};
+
+use uuid::Uuid;
+
+#[derive(Clone,Debug)]
 pub struct Tile {
+    pub id: Uuid,
     pub x:i32,
     pub y:i32,
-    pub content: Option<TileContent>,
+    pub content: TileContent,
 }
-#[derive(Default, Clone)]
+#[derive(Clone,Debug, Default)]
 pub struct Base {
     pub icon: String,
-    pub x:i32,
-    pub y:i32
-
 }
 
-#[derive(Default, Clone)]
+#[derive(Clone,Debug, Default)]
 pub struct EntityStruct {
     pub base:Base,
     pub hunger: i32,
@@ -20,7 +22,7 @@ pub struct EntityStruct {
     pub state: State
 }
 
-#[derive(Clone)]
+#[derive(Clone,Debug, Default)]
 pub struct EatableStruct {
     pub base:Base,
     pub value:i32,
@@ -28,7 +30,7 @@ pub struct EatableStruct {
     // other properties can be added here
 }
 
-#[derive(Clone)]
+#[derive(Clone,Debug)]
 pub enum TileContent {
     Empty(Base),
     Entity(EntityStruct),
@@ -36,7 +38,7 @@ pub enum TileContent {
     // mineable()
 }
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone,Debug)]
 pub enum State {
     #[default] Idle,
     Searching,

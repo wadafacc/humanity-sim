@@ -1,14 +1,18 @@
+use std::{collections::HashMap};
+use uuid::Uuid;
+
 use crate::datastructures::*;
 
 /// The pinnacle of human engineering: The Printer. A feat of mechanics, technology and analog media that engineers to this day can't fix.
-pub fn print(mut map:Vec<Vec<Tile>>) {
-    let mut entity:EntityStruct = EntityStruct {..Default::default()};
+pub fn print(map:Vec<Vec<Uuid>>, list: HashMap<Uuid, TileContent>) {
+    let mut entity = &EntityStruct { ..Default::default()};
     for row in map {
         for tile in row {
-            match tile.content.unwrap() {
+            let current = list.get(&tile).unwrap();
+            match current {
                 TileContent::Empty(e) => print!("| {} ", e.icon),
                 TileContent::Eatable(e) => print!("| {} ", e.base.icon),
-                TileContent::Entity(e) => {entity = e;print!("| {} ", entity.base.icon)}
+                TileContent::Entity(e) => entity = e,
             }
         }
         println!("|");

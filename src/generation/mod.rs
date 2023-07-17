@@ -1,44 +1,47 @@
+use uuid::{uuid, Uuid};
+use std::collections::HashMap;
+
 use rand::{Rng, thread_rng};
 
 use crate::datastructures::{Tile, TileContent, Base, EatableStruct};
 use crate::constants::*;
 
-pub fn setup_tiles() -> Vec<Vec<Tile>> {
-    let mut map:Vec<Vec<Tile>> = Vec::new();
+pub fn setup_tiles() -> (Vec<Vec<Uuid>>, HashMap<Uuid, TileContent>) {
+    let mut map:Vec<Vec<Uuid>> = Vec::new();
+    let mut hashmap:HashMap<Uuid, TileContent> = HashMap::new();
     for y in 0..HEIGHT {
-        let mut row:Vec<Tile> = Vec::new();
+        let mut row:Vec<Uuid> = Vec::new();
         for x in 0..WIDTH {
-            row.push(Tile {
+            let tile = Tile {
+                id: Uuid::new_v4(),
                 x:x,
                 y:y,
-                content: set_tile_content((x,y)),
-            });
+                content: set_tile_content(),
+            };
+            row.push(tile.id);
+            hashmap.insert(tile.id,tile.content);
+
         }
         map.push(row);
     }
 
-    map
+    (map, hashmap)
 }
 
-
-fn set_tile_content(coords:(i32,i32)) -> Option<TileContent> {
+fn set_tile_content() -> TileContent {
     if thread_rng().gen::<f64>() <= FOOD_CHANCE {
-        return Some(TileContent::Eatable(EatableStruct { 
+        return TileContent::Eatable(EatableStruct { 
             base: Base {
                 icon:FOOD_ICON.to_string(),
-                x:coords.0,
-                y:coords.1
             }, 
             eatable:true,
             value: (thread_rng().gen_range(1..MAX_FOOD_REJUV)) 
-        }));
+        });
     } 
     else {
-        return Some(TileContent::Empty(Base { 
+        return TileContent::Empty(Base { 
             icon:EMPTY_ICON.to_string(),
-            x:coords.0,
-            y:coords.1
-        }));
+        });
     };
 
    

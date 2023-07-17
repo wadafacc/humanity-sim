@@ -12,20 +12,17 @@ mod officejet;
 
 fn main() {
     // generate a map for the current runthrough
-    let mut map = generation::setup_tiles();
+    let (mut id_map,mut data_map) = generation::setup_tiles();
     
     // init a new "player"
     let entity = Entity(EntityStruct {
         base:Base {
-            x:0,
-            y:0,
             icon:ENTITY_ICON.to_string(),
         },
         hunger: MAX_HUNGER,
         health:HEALTH,
         state: State::Idle
     });
-    map[0][0].content = Some(entity.to_owned());
     /*
     TODO:
     - Setup Tick System [DONE]
@@ -40,26 +37,19 @@ fn main() {
     - Get food if hungry
     */
 
+    officejet::clear();
+    officejet::print(id_map.clone(), data_map.clone());
+
     let mut start_time = Instant::now();    // capture start time
-    let mut entity = &mut EntityStruct {..Default::default()};
-    match map[0][0].content.as_mut().unwrap() {
-        TileContent::Entity(e) => entity = e,
-        TileContent::Eatable(e) => (),
-        _ => (),
-    };
-    // main loop
+
     loop {
         // put tick-dependant code here
         if start_time.elapsed() >= Duration::from_millis(MAX_TICK) {
             start_time = Instant::now();
             
-
-
-            entity.hunger -= HUNGER_DECAY;
             
             // refresh the display
-            officejet::clear();
-            officejet::print(main_map.clone());
+
         }
 
         // and the rest out here
@@ -71,5 +61,9 @@ fn main() {
 /*
 refurb
 
+- 2d vec -> map, used for printing
+- list with food nodes
+- list with entities
+- generate id's for each of em
 
 */
