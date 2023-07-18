@@ -2,6 +2,7 @@ use std::time::{Instant, Duration};
 
 use constants::*;
 use datastructures::{TileContent, Tile};
+use uuid::Uuid;
 
 use crate::{constants::{MAX_TICK,ENTITY_ICON}, datastructures::{State, TileContent::Entity, EntityStruct, Base}};
 
@@ -11,11 +12,10 @@ mod datastructures;
 mod officejet;
 
 fn main() {
-    // generate a map for the current runthrough
-    let (mut id_map,mut data_map) = generation::setup_tiles();
-    
+
     // init a new "player"
     let entity = Entity(EntityStruct {
+        id:Uuid::new_v4(),
         base:Base {
             icon:ENTITY_ICON.to_string(),
         },
@@ -23,6 +23,10 @@ fn main() {
         health:HEALTH,
         state: State::Idle
     });
+
+    // generate a map for the current runthrough
+    let (mut id_map,mut data_map) = generation::init_map(entity);
+    
     /*
     TODO:
     - Setup Tick System [DONE]
@@ -37,8 +41,7 @@ fn main() {
     - Get food if hungry
     */
 
-    officejet::clear();
-    officejet::print(id_map.clone(), data_map.clone());
+
 
     let mut start_time = Instant::now();    // capture start time
 
@@ -47,9 +50,21 @@ fn main() {
         if start_time.elapsed() >= Duration::from_millis(MAX_TICK) {
             start_time = Instant::now();
             
-            
-            // refresh the display
+            id_map.iter().for_each(|v| {
+                v.iter().for_each(|t| {
+                    let mut current = data_map.get_mut(&t).unwrap();
+                    match current {
+                        TileContent::Empty(e) => (),
+                        TileContent::Eatable(e) => (),
+                        TileContent::Entity(e) => e.hunger -= HUNGER_DECAY
+                    }
+                });
+            });       
 
+
+            // refresh the display
+            officejet::clear();
+            officejet::print(id_map.clone(), data_map.clone());
         }
 
         // and the rest out here

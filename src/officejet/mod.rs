@@ -1,4 +1,4 @@
-use std::{collections::HashMap};
+use std::collections::HashMap;
 use uuid::Uuid;
 
 use crate::datastructures::*;
@@ -12,7 +12,7 @@ pub fn print(map:Vec<Vec<Uuid>>, list: HashMap<Uuid, TileContent>) {
             match current {
                 TileContent::Empty(e) => print!("| {} ", e.icon),
                 TileContent::Eatable(e) => print!("| {} ", e.base.icon),
-                TileContent::Entity(e) => entity = e,
+                TileContent::Entity(e) =>{ entity = e; print!("| {} ", entity.base.icon); },
             }
         }
         println!("|");

@@ -1,5 +1,3 @@
-use std::{any::TypeId, default};
-
 use uuid::Uuid;
 
 #[derive(Clone,Debug)]
@@ -16,6 +14,7 @@ pub struct Base {
 
 #[derive(Clone,Debug, Default)]
 pub struct EntityStruct {
+    pub id: Uuid,
     pub base:Base,
     pub hunger: i32,
     pub health: i32,

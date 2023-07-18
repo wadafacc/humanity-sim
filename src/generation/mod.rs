@@ -1,10 +1,22 @@
-use uuid::{uuid, Uuid};
+use uuid::{Uuid};
 use std::collections::HashMap;
 
 use rand::{Rng, thread_rng};
 
 use crate::datastructures::{Tile, TileContent, Base, EatableStruct};
 use crate::constants::*;
+
+
+pub fn init_map(entity: TileContent) -> (Vec<Vec<Uuid>>, HashMap<Uuid, TileContent>) {
+    let (mut id_map,mut data_map) = setup_tiles();
+    if let TileContent::Entity(e) = entity.clone() {
+        println!("{:?}",e);
+        id_map[0][0] = e.id;
+        data_map.insert(e.id, entity);
+    };
+    (id_map, data_map)
+}
+
 
 pub fn setup_tiles() -> (Vec<Vec<Uuid>>, HashMap<Uuid, TileContent>) {
     let mut map:Vec<Vec<Uuid>> = Vec::new();
